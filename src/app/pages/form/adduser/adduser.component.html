@@ -1,0 +1,132 @@
+<div class="container-fluid">
+  <app-page-title title="Add User" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title mb-4"> New User</h4>
+
+          <aw-wizard [navBarLayout]="'large-empty-symbols'">
+            <aw-wizard-step stepTitle="Basic Information">
+              <ng-template awWizardStepSymbol>1</ng-template>
+              <form class="form-horizontal" id="adduserFormOne" [formGroup]="adduserFormOne">
+
+                <div class="row mt-3">
+                  <div class="col-12">
+                    <div class="form-group row mb-3">
+                      <label class="col-md-1 col-form-label">Full Name</label>
+                      <div class="col-md-6">
+                        <input class="form-control" name="name" formControlName="name" type="text" id="name" [ngClass]="{ 'is-invalid': submitted && f.name.errors }" />
+                        <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                          <div *ngIf="f.name.errors.required">Name is required</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                      <label class="col-md-1 col-form-label">Email</label>
+                      <div class="col-md-6">
+                        <input class="form-control" formControlName="email" name="email" type="text" id="email" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                          <div *ngIf="f.email.errors.required">Email is required</div>
+                          <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                      <label class="col-md-1 col-form-label">Password</label>
+                      <div class="col-md-6">
+                        <input class="form-control" name="password" type="password" id="password"  />
+                        <!-- <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                          <div *ngIf="f.email.errors.required">Email is required</div>
+                          <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
+                        </div> -->
+                      </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                      <label class="col-md-1 col-form-label">Mobile No.</label>
+                      <div class="col-md-6">
+                        <input class="form-control" formControlName="phone" name="phone" type="text" id="phone" [ngClass]="{ 'is-invalid': submitted && f.phone.errors }" />
+                        <div *ngIf="submitted && f.phone.errors" class="invalid-feedback">
+                          <div *ngIf="f.phone.errors.required">Phone is required</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                      <label class="col-md-1 col-form-label">Landline No.</label>
+                      <div class="col-md-6">
+                        <input class="form-control" formControlName="landline" name="landline" type="text" id="landline">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <ul class="list-inline wizard mb-0">
+                <li class="next list-inline-item float-right"><button class="btn btn-primary" (click)="next(1)">Next</button>
+                </li>
+              </ul>
+            </aw-wizard-step>
+
+            <aw-wizard-step stepTitle="Details">
+              <ng-template awWizardStepSymbol>2</ng-template>
+              <form class="form-horizontal" id="adduserFormTwo" [formGroup]="adduserFormTwo">
+
+                <div class="row mt-3">
+                  <div class="col-12">
+                    <div class="form-group row">
+                      <label class="col-md-2 col-form-label" for="ddlCreditCardType">User Group</label>
+                      <div class="col-md-6">
+                        <select id="user_role" formControlName="user_role" name="user_role" class="form-control" [ngClass]="{ 'is-invalid': submittedTwo && fTwo.user_role.errors }">
+
+                          <option value="">--Please Select--</option>
+                          <option *ngFor="let group of userGroup;" [value]="group.id">{{ group.name_en }}</option>
+                        </select>
+                        <div *ngIf="submittedTwo && fTwo.user_role.errors" class="invalid-feedback">
+                          <div *ngIf="fTwo.user_role.errors.required">Phone is required</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group row mb-3">
+                      <label class="col-md-2 col-form-label">Photo</label>
+                      <div class="col-md-6">
+
+                        <dropzone class="dropzone" (success)="onUploadSuccess($event)" [config]="config"></dropzone>
+                        <input id="photo" name="photo" type="hidden" formControlName="photo">
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </form>
+              <ul class="list-inline wizard mb-0">
+                <li class="previous list-inline-item"><button class="btn btn-primary" awPreviousStep>Previous</button>
+                </li>
+                <li class="next list-inline-item float-right"><button class="btn btn-primary" (click)="next(2)">Next</button>
+                </li>
+              </ul>
+            </aw-wizard-step>
+
+            <aw-wizard-step stepTitle="Confirm and send">
+              <ng-template awWizardStepSymbol>3</ng-template>
+              <form class="form-horizontal" id="adduserFormThree" [formGroup]="adduserFormThree">
+
+                <div class="p-3 text-center">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" formControlName="send" id="send" value="send">
+                    <label class="custom-control-label" for="send">Confirm and send message to the new user.</label>
+                  </div>
+                </div>
+              </form>
+              <ul class="list-inline wizard mb-0">
+                <li class="previous list-inline-item"><button class="btn btn-primary" awPreviousStep>Previous</button>
+                </li>
+                <li class="next list-inline-item float-right"><button class="btn btn-primary" (click)="next(3)">Finish</button>
+                </li>
+              </ul>
+            </aw-wizard-step>
+          </aw-wizard>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

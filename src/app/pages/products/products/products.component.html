@@ -1,0 +1,135 @@
+<div class="container-fluid">
+  <!-- page title -->
+  <app-page-title title="All Products" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+  <div class="row">
+    <div class="col-lg-3">
+      <div class="card">
+        <div class="card-body">
+          <div class="second-card-header">
+            <h5 class="">Filters</h5>
+            <a class="apply-button" href="javascript: void(0);" (click)="apply()">Apply</a>
+          </div>
+          <div class="shops-spinner">
+            <h5 class="font-size-14 mb-3">Shops</h5>
+
+            <ng-select (change)="onChange($event)" [items]="shops" bindLabel="name" bindValue="id" [multiple]="true"></ng-select>
+
+          </div>
+          <div>
+            <h5 class="font-size-14 mb-3">Group</h5>
+            <ul class="list-unstyled product-list">
+              <!-- <li><a href="javascript: void(0);"><i class="mdi mdi-chevron-right mr-1"></i> Diamond</a></li>
+              <li><a href="javascript: void(0);"><i class="mdi mdi-chevron-right mr-1"></i> Gold</a></li>
+              <li><a href="javascript: void(0);"><i class="mdi mdi-chevron-right mr-1"></i> Silver</a></li> -->
+              <li *ngFor="let item_group of items_group"><a href="javascript: void(0);" (click)="toggleGroup($event, item_group.id)"><i class="mdi mdi-chevron-right mr-1"></i> {{ item_group.name_en }} </a></li>
+
+            </ul>
+          </div>
+          <div>
+            <h5 class="font-size-14 mb-3">Category</h5>
+            <ul class="list-unstyled product-list">
+              <li *ngFor="let item_category of items_category"><a href="javascript: void(0);" (click)="toggleCategory($event, item_category.id)"><i class="mdi mdi-chevron-right mr-1"></i> {{ item_category.name_en }}</a></li>
+
+              <!--
+              <li><a href="javascript: void(0);"><i class="mdi mdi-chevron-right mr-1"></i> Necklaces</a></li>
+              <li><a href="javascript: void(0);"><i class="mdi mdi-chevron-right mr-1"></i> Bracelets</a></li>
+              <li><a href="javascript: void(0);"><i class="mdi mdi-chevron-right mr-1"></i> Rings</a></li>
+              <li><a href="javascript: void(0);"><i class="mdi mdi-chevron-right mr-1"></i> Watches</a></li> -->
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    <div class="col-lg-9">
+      <div class="row mb-3">
+        <div class="col-lg-12 col-sm-12">
+          <form class="mt-4 mt-sm-0 float-sm-right form-inline">
+            <div class="search-box mr-2">
+              <div class="position-relative">
+                <input type="text" class="form-control border-0" placeholder="Search..." (input)="searchFilter($event)">
+                <i class="bx bx-search-alt search-icon"></i>
+              </div>
+            </div>
+            <ul class="nav nav-pills product-view-nav">
+              <li class="nav-item">
+                <a class="nav-link active" href="javascript: void(0);"><i class="bx bx-grid-alt"></i></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="javascript: void(0);"><i class="bx bx-list-ul"></i></a>
+              </li>
+            </ul>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xl-4 col-sm-6" *ngFor="let product of products">
+          <div class="card">
+            <div class="card-body">
+              <div class="dropdown" container="body" ngbDropdown placement="bottom-right">
+                <a href="javascript: void(0);" class="dropdown-toggle card-drop" data-toggle="dropdown" ngbDropdownToggle aria-expanded="false">
+                  <i class="fa fa-cog"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                  <li><a href="javascript: void(0);" (click)="openModal(generateBarcode, product.id)" class="dropdown-item"><i class="bx bx-barcode text-info mr-1" ></i>
+                      Generate Barecode</a></li>
+                  <li><a href="javascript: void(0);" (click)="editItem(product.id)" class="dropdown-item"><i class="fas fa-pencil-alt text-success mr-1"></i>
+                      Edit</a></li>
+                  <li><a href="javascript: void(0);" (click)="hideItem(product.id, product.hidden)" class="dropdown-item"><i class="fas {{product.hidden ? 'fa-eye' : 'fa-eye-slash'}} text-primary mr-1"></i>
+                      {{product.hidden ? 'Show' : 'Hide'}}</a></li>
+                  <li><a href="javascript: void(0);" (click)="deleteGroupItem(product.id)" class="dropdown-item"><i class="fas fa-trash-alt text-danger mr-1"></i>
+                      Delete</a></li>
+                </ul>
+              </div>
+              <div class="product-img position-relative" style="opacity: {{ product.hidden ? 0.5 : 1 }}">
+                <div class="avatar-sm product-ribbon">
+
+                </div>
+
+                <a [routerLink]="['/products/detail',product.id]" href="javascript: void(0);"><img src="{{backend + '/getfile/?id='  + product.images[0].id}}" alt="" class="img-fluid mx-auto d-block"></a>
+              </div>
+              <div class="mt-4 text-center">
+                <h5 class="mb-3 text-truncate"><a [routerLink]="['/products/detail',product.id]" href="javascript: void(0);" class="text-dark">{{product.name_en}} </a>
+                </h5>
+
+                {{product.shop_id.app_name_en}}
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end row -->
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <!-- <ngb-pagination class="pagination-rounded d-flex justify-content-center" [collectionSize]="6" page="1"
+            [maxSize]="1" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination> -->
+        </div>
+      </div>
+    </div>
+    <!-- end row -->
+  </div>
+  <ng-template #generateBarcode role="document" let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Generate Barecode</h5>
+      <button type="button" class="close" aria-hidden="true" (click)="modal.dismiss('Cross click')">×</button>
+    </div>
+    <div class="modal-body">
+
+      <ngb-alert type="danger" *ngIf="error" [dismissible]="false">{{ error }}</ngb-alert>
+      <div class="barcodePanel">
+        <img [src]="barcodeImage"class="img-fluid mx-auto d-block">
+      </div>
+      <div class="d-flex justify-content-center">
+        <qrcode [qrdata]="generateQrcode" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+      </div>
+      {{ generateQrcode }}
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+      <!-- <button class="btn btn-primary" (click)="generateBC()">Generate a new code</button> -->
+
+    </div>
+  </ng-template>

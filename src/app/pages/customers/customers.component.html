@@ -1,0 +1,149 @@
+<div class="container-fluid">
+
+  <app-page-title title="Customers" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row mb-2">
+            <div class="col-sm-4">
+              <div class="search-box mr-2 mb-2 d-inline-block">
+                <div class="position-relative">
+                  <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="term" />
+                  <i class="bx bx-search-alt search-icon"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- end col-->
+          </div>
+          <div class="table-responsive">
+            <table class="table table-centered table-nowrap">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Phone / Email</th>
+                  <th>Address</th>
+                  <th>Rating</th>
+                  <th>Total purchases</th>
+                  <th>Joining Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let customers of customersData  | filter:term ;let i = index;">
+                  <td>
+                    <div class="custom-control custom-checkbox">
+                      <input id="customCheck{{i}}" type="checkbox" class="custom-control-input" />
+                      <label class="custom-control-label" for="customCheck{{i}}">&nbsp;</label>
+                    </div>
+                  </td>
+                  <td>{{customers.name}}</td>
+                  <td>
+                    <p class="mb-1">{{customers.phone}}</p>
+                    <p class="mb-0">{{customers.email}}</p>
+                  </td>
+
+                  <td>{{customers.address}}</td>
+                  <td>
+                    <span class="badge badge-success font-size-12">
+                      <i class="mdi mdi-star mr-1"></i>
+                      {{customers.rating}}
+                    </span>
+                  </td>
+                  <td>{{customers.balance}}</td>
+                  <td>{{customers.createdAt  | date:'dd/LL/YYYY' }}</td>
+                  <td>
+                    <div class="dropdown" container="body" ngbDropdown placement="bottom-right">
+                      <a href="javascript: void(0);" class="dropdown-toggle card-drop" data-toggle="dropdown"
+                        ngbDropdownToggle aria-expanded="false">
+                        <i class="mdi mdi-dots-horizontal font-size-18"></i>
+                      </a>
+                      <ul class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                        <a class="dropdown-item" (click)="openEdit(editContent, customers.id)"><i class="mdi mdi-account-edit"></i>Edit</a>
+                        <a class="dropdown-item" (click)="deleteGroupItem(customers.id)"><i class="mdi mdi-delete"></i>delete</a>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- pagination -->
+          <!-- <ngb-pagination [collectionSize]="50" [(page)]="currentpage"
+            class="pagination pagination-rounded justify-content-end mb-2" aria-label="Default pagination">
+          </ngb-pagination> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end row -->
+</div>
+
+<ng-template #editContent role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Edit Customer</h5>
+    <button type="button" class="close" aria-hidden="true" (click)="modal.dismiss('Cross click')">×</button>
+  </div>
+  <div class="modal-body">
+    <form class="form-horizontal" id="editForm" [formGroup]="editForm" (ngSubmit)="onEdit(modal)">
+
+      <ngb-alert type="danger" *ngIf="error" [dismissible]="false">{{ error }}</ngb-alert>
+      <div class="form-group">
+        <label for="name_en">ID</label>
+
+        <input type="text" formControlName="id" class="form-control" id="id"
+          [ngClass]="{ 'is-invalid': submitted && fe.id.errors }"/>
+        <div *ngIf="submitted && fe.id.errors" class="invalid-feedback">
+          <div *ngIf="fe.id.errors.required">ID is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="name_en">Name</label>
+
+        <input type="text" formControlName="name" class="form-control" id="name"
+          [ngClass]="{ 'is-invalid': submitted && fe.name.errors }" />
+        <div *ngIf="submitted && fe.name.errors" class="invalid-feedback">
+          <div *ngIf="fe.name.errors.required">Name is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="name_ar">Phone</label>
+
+        <input type="text" formControlName="phone" class="form-control" id="phone"
+          [ngClass]="{ 'is-invalid': submitted && fe.phone.errors }" />
+        <div *ngIf="submitted && fe.phone.errors" class="invalid-feedback">
+          <div *ngIf="fe.phone.errors.required">phone is required</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+
+        <input type="email" formControlName="email" class="form-control" id="email" placeholder="Email"
+          [ngClass]="{ 'is-invalid': submitted && fe.email.errors }" />
+        <div *ngIf="submitted && fe.email.errors" class="invalid-feedback">
+          <div *ngIf="fe.email.errors.required">Email is required</div>
+          <div *ngIf="fe.email.errors.email">Email must be a valid email address</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="address">Address</label>
+
+        <input type="text" formControlName="address" class="form-control" id="address"
+          [ngClass]="{ 'is-invalid': submitted && fe.address.errors }" />
+        <div *ngIf="submitted && fe.address.errors" class="invalid-feedback">
+          <div *ngIf="fe.address.errors.required">Address is required</div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    <input class="btn btn-primary" type="submit" form="editForm" value="Save"/>
+
+  </div>
+</ng-template>

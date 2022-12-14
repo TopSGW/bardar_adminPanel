@@ -1,0 +1,88 @@
+<div class="container-fluid">
+
+    <app-page-title title="Shops" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row mb-2">
+              <div class="col-sm-4">
+                <div class="search-box mr-2 mb-2 d-inline-block">
+                  <div class="position-relative">
+                    <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="term" />
+                    <i class="bx bx-search-alt search-icon"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- end col-->
+            </div>
+            <div class="table-responsive">
+              <table class="table table-centered table-nowrap">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Shop Name</th>
+                    <th>إسم المتجر</th>
+                    <th>Abbreviation</th>
+                    <th>Phone / Email</th>
+                    <th>Address</th>
+                    <th>Sales</th>
+                    <th>Wallet Balance</th>
+                    <th>Joining Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let customers of customersData  | filter:term ;let i = index;">
+                    <td>
+                      <div class="custom-control custom-checkbox">
+                        <input id="customCheck{{i}}" type="checkbox" class="custom-control-input" />
+                        <label class="custom-control-label" for="customCheck{{i}}">&nbsp;</label>
+                      </div>
+                    </td>
+                    <td>{{customers.app_name_en}}</td>
+                    <td>{{customers.app_name_ar}}</td>
+                    <td>{{customers.app_abbreviation}}</td>
+                    <td>
+                      <p class="mb-1">{{customers.phone}}</p>
+                      <p class="mb-0">{{customers.email}}</p>
+                    </td>
+
+                    <td>{{customers.address_ar}}</td>
+                    <td>
+                        {{customers.sales}}
+                    </td>
+                    <td>{{customers.balance}}</td>
+                    <td>{{customers.createdAt  | date:'dd/LL/YYYY' }}</td>
+                    <td>
+                      <div class="dropdown" container="body" ngbDropdown placement="bottom-right">
+                        <a href="javascript: void(0);" class="dropdown-toggle card-drop" data-toggle="dropdown"
+                          ngbDropdownToggle aria-expanded="false">
+                          <i class="mdi mdi-dots-horizontal font-size-18"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                          <li><a href="javascript: void(0);" (click)="editItem(customers.id)" class="dropdown-item"><i
+                                class="fas fa-pencil-alt text-success mr-1"></i>
+                              Edit</a></li>
+                          <li><a href="javascript: void(0);"  (click)="deleteGroupItem(customers.id)" class="dropdown-item"><i
+                                class="fas fa-trash-alt text-danger mr-1"></i>
+                              Delete</a></li>
+                        </ul>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- pagination -->
+            <!-- <ngb-pagination [collectionSize]="50" [(page)]="currentpage"
+              class="pagination pagination-rounded justify-content-end mb-2" aria-label="Default pagination">
+            </ngb-pagination> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end row -->
+  </div>

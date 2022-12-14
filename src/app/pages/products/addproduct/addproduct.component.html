@@ -1,0 +1,212 @@
+<div class="container-fluid">
+
+  <!-- start page title -->
+  <app-page-title title="Add Product" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  <!-- end page title -->
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+
+          <h4 class="card-title">Basic Information</h4>
+          <p class="card-title-desc">Fill all information</p>
+
+          <form [formGroup]="productForm" id="productForm" name="productForm" (ngSubmit)="validSubmit()">
+            <div class="row">
+              <div class="col-sm-12 d-flex">
+                <label for="productname" class="mr-3">Exclusive Product</label>
+                <div class="custom-control custom-switch mb-3" dir="ltr">
+                  <input type="checkbox" class="custom-control-input" id="customSwitch1" formControlName="isExclusive" [checked]="isExclusive">
+                  <label class="custom-control-label" for="customSwitch1"></label>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="productname">Product Name</label>
+                  <input id="name_en" name="name_en" type="text" class="form-control" formControlName="name_en" [ngClass]="{'is-invalid': submit && form.name_en.errors}">
+                  <div *ngIf="submit && form.name_en.errors" class="invalid-feedback">
+                    <span *ngIf="form.name_en.errors.required">Product Name is required.</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="productnameAr">إسم المنتج</label>
+                  <input id="name_ar" name="name_ar" type="text" class="form-control" formControlName="name_ar" [ngClass]="{'is-invalid': submit && form.name_ar.errors}">
+                  <div *ngIf="submit && form.name_ar.errors" class="invalid-feedback">
+                    <span *ngIf="form.name_ar.errors.required">إسم المنتج is required.</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Shop</label>
+                  <ng-select [items]="shops" bindLabel="name" bindValue="id" [ngClass]="{'is-invalid': submit && form.shop_id.errors}" formControlName="shop_id"></ng-select>
+                  <div *ngIf="submit && form.shop_id.errors" class="invalid-feedback">
+                    <span *ngIf="form.shop_id.errors.required">Shop is required.</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Group</label>
+                  <ng-select [items]="items_group" [ngClass]="{'is-invalid': submit && form.group_id.errors}" bindLabel="name" bindValue="id" formControlName="group_id"></ng-select>
+                  <div *ngIf="submit && form.shop_id.errors" class="invalid-feedback">
+                    <span *ngIf="form.shop_id.errors.required">Group is required.</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Color</label>
+                  <ng-select [items]="items_color" [ngClass]="{'is-invalid': submit && form.color.errors}" bindLabel="name" bindValue="name" formControlName="color"></ng-select>
+                  <div *ngIf="submit && form.color.errors" class="invalid-feedback">
+                    <span *ngIf="form.color.errors.required">Color is required.</span>
+                  </div>
+                </div>
+                <label for="product-image" class="mt-2">Product Images</label>
+                <dropzone class="dropzone" [ngClass]="{'is-invalid': submit && form.images.errors}" (error)="onUploadError($event)" (queueComplete)="onQueueComplete($event)" (processing)="onUploadInit($event)" (success)="onUploadSuccess($event)"
+                  [config]="config"></dropzone>
+                <input id="images" name="images" type="hidden" formControlName="images">
+                <div *ngIf="submit && form.images.errors" class="invalid-feedback">
+                  <span *ngIf="form.images.errors.required">Product Images are required, upload at least.</span>
+                </div>
+                <div *ngIf="files.length>0" class="dropzone-display">
+                  <div class="row">
+                    <div *ngFor="let file of files" class="col-md-4">
+                      <div class="document-display">
+                        <a (click)="deleteImage(file)" class="delete-image"><i class="fas fa-trash-alt text-danger mr-1"></i>
+                        </a>
+                        <img src="{{backend + '/getfile/?id='  + file}}" class="img-fluid mx-auto d-block">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="control-label">Category</label>
+                  <ng-select [items]="items_category" [ngClass]="{'is-invalid': submit && form.category_id.errors}" (change)="onShowSizeOfRing($event)" bindLabel="name" bindValue="id" formControlName="category_id"></ng-select>
+                  <div *ngIf="submit && form.category_id.errors" class="invalid-feedback">
+                    <span *ngIf="form.category_id.errors.required">Category is required.</span>
+                  </div>
+                </div>
+                <div *ngIf="show_ringsize" class="form-group">
+                  <label class="control-label">Size of ring</label>
+                  <ng-select [items]="ringSize" bindLabel="name_en" bindValue="id" formControlName="ring_size"></ng-select>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Collection</label>
+                  <ng-select [items]="kenf_category" [ngClass]="{'is-invalid': submit && form.kenf_id.errors}" bindLabel="name" bindValue="id" formControlName="kenf_id"></ng-select>
+                  <div *ngIf="submit && form.kenf_id.errors" class="invalid-feedback">
+                    <span *ngIf="form.kenf_id.errors.required">Collection is required.</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Purity (Karats)</label>
+                  <ng-select [items]="purity" [ngClass]="{'is-invalid': submit && form.purity_id.errors}" bindLabel="name" bindValue="id" formControlName="purity_id" [multiple]="true"></ng-select>
+                  <div *ngIf="submit && form.purity_id.errors" class="invalid-feedback">
+                    <span *ngIf="form.purity_id.errors.required">Purity is required.</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="productname">Weight</label>
+                  <input id="weight" name="weight" type="number" class="form-control" formControlName="weight" [ngClass]="{'is-invalid': submit && form.weight.errors}">
+                  <div *ngIf="submit && form.weight.errors" class="invalid-feedback">
+                    <span *ngIf="form.weight.errors.required">Weight is required.</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="control-label">Unit</label>
+
+                  <ng-select [items]="unit" [ngClass]="{'is-invalid': submit && form.unit_id.errors}" bindLabel="name" bindValue="id" formControlName="unit_id" [multiple]="true"></ng-select>
+                  <div *ngIf="submit && form.unit_id.errors" class="invalid-feedback">
+                    <span *ngIf="form.unit_id.errors.required">Unit is required.</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="quantity">Quantity</label>
+                  <input id="quantity" name="quantity" type="number" class="form-control" formControlName="quantity" [ngClass]="{'is-invalid': submit && form.quantity.errors}">
+                  <div *ngIf="submit && form.quantity.errors" class="invalid-feedback">
+                    <span *ngIf="form.quantity.errors.required">Quantity is required.</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="extra_price">Extra price</label>
+                  <input id="extra_price" name="extra_price" type="number" class="form-control" formControlName="extra_price" [ngClass]="{'is-invalid': submit && form.extra_price.errors}">
+                  <div *ngIf="submit && form.extra_price.errors" class="invalid-feedback">
+                    <span *ngIf="form.extra_price.errors.required">Extra price is required.</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="commission">Commission</label>
+                  <input id="commission" name="commission" type="text" class="form-control" formControlName="commission" [ngClass]="{'is-invalid': submit && form.commission.errors}">
+                  <div *ngIf="submit && form.commission.errors" class="invalid-feedback">
+                    <span *ngIf="form.commission.errors.required">Commission is required.</span>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="productdesc">Product Description</label>
+                  <textarea [ngClass]="{'is-invalid': submit && form.description_en.errors}" class="form-control" id="description_en" formControlName="description_en" rows="5"></textarea>
+                  <div *ngIf="submit && form.description_en.errors" class="invalid-feedback">
+                    <span *ngIf="form.description_en.errors.required">Product Description is required.</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="productdesc">وصف المنتج</label>
+                  <textarea [ngClass]="{'is-invalid': submit && form.description_ar.errors}" class="form-control" id="description_ar" formControlName="description_ar" rows="5"></textarea>
+                  <div *ngIf="submit && form.description_ar.errors" class="invalid-feedback">
+                    <span *ngIf="form.description_ar.errors.required">وصف المنتج is required.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-3">
+
+              <div class="row col-md-12">
+                <div class="col-md-8">
+                  <input type="submit" form="productForm" class="btn btn-primary mr-1" value="Save Changes" />
+                  <button type="submit" class="btn btn-secondary">Cancel</button>
+                </div>
+              </div>
+
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+
+          <h4 class="card-title">Meta Data</h4>
+          <p class="card-title-desc">Fill all information below</p>
+
+          <form>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="metatitle">Meta title</label>
+                  <input id="metatitle" name="productname" type="text" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="metakeywords">Meta Keywords</label>
+                  <input id="metakeywords" name="manufacturername" type="text" class="form-control">
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="metadescription">Meta Description</label>
+                  <textarea class="form-control" id="metadescription" rows="5"></textarea>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary mr-1">Save Changes</button>
+            <button type="submit" class="btn btn-secondary">Cancel</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end row -->
+
+</div> <!-- container-fluid -->

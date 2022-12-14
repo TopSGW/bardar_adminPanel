@@ -1,0 +1,114 @@
+<div class="container-fluid">
+  <div class="d-xl-flex">
+    <div class="w-100">
+      <div class="d-md-flex">
+        <div class="card filemanager-sidebar mr-md-2">
+          <div class="card-body">
+
+            <div class="d-flex flex-column h-100">
+              <div class="mb-4">
+                <div class="form-group">
+                  <label for="productname">Barcode</label>
+                  <div class="box">
+                    <div class="container-4">
+                      <input type="search" id="search"  type="text" placeholder="Search..." [value]="barecode" [(ngModel)]="barecode" class="form-control">
+                      <button class="icon" (click)="searchBarcode()"><i class="fa fa-search"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <dropzone class="dropzone" (addedFiles)="onUploadSuccess($event)" [config]="config"></dropzone>
+              <div id="reader"></div>
+            </div>
+
+          </div>
+        </div>
+        <!-- filemanager-leftsidebar -->
+
+        <div class="w-100">
+          <div class="card">
+            <div class="card-body">
+
+              <div *ngIf="productDetail" class="row">
+                <div class="col-xl-6">
+                  <div class="product-detai-imgs">
+                    <div class="row">
+                      <ul ngbNav #nav="ngbNav" class="col-md-2 col-sm-3 col-4" orientation="vertical">
+                        <li *ngFor="let myproduct of productDetail.images; let i = index" [ngbNavItem]="i" class="p-2">
+                          <a ngbNavLink>
+                            <img src="{{backend + '/getfile/?id='  + myproduct.id}}" alt="" class="img-fluid mx-auto d-block rounded" />
+                          </a>
+                          <ng-template ngbNavContent>
+                            <img src="{{backend + '/getfile/?id='  + myproduct.id}}" id="expandedImg" alt="" class="img-fluid mx-auto d-block">
+                          </ng-template>
+                        </li>
+                      </ul>
+                      <div [ngbNavOutlet]="nav" class="col-md-7 offset-md-1 col-sm-9 col-8"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-xl-6">
+                  <div class="mt-4 mt-xl-3">
+                    <h5 class="product-detail">Product Name: <span class="text-muted me-2"></span> {{productDetail.name_en}}</h5>
+                    <h5 class="product-detail">إسم المنتج: <span class="text-muted me-2"></span> {{productDetail.name_ar}}</h5>
+
+                    <h5 class="product-detail">Shop : <span class="text-muted me-2"></span> {{productDetail.shop_id.app_name_en}}</h5>
+
+                    <h5 class="product-detail">Group : <span class="text-muted me-2"></span> {{productDetail.group_id.name_en}}</h5>
+                    <h5 class="product-detail">Category : <span class="text-muted me-2"></span> {{productDetail.category_id.name_en}}</h5>
+                    <h5 class="product-detail">Purity (Karats) : <span class="text-muted me-2"></span> <span *ngFor="let purity_id of productDetail.purity_id" class="background-option text-muted me-2">{{ purity_id.name_en }}</span></h5>
+                    <h5 class="product-detail">Weight : <span class="text-muted me-2"></span> {{productDetail.weight}}</h5>
+                    <h5 class="product-detail">Unit : <span class="text-muted me-2"></span> <span *ngFor="let unit_id of productDetail.unit_id" class="background-option text-muted me-2">{{ unit_id.name_en }}</span></h5>
+                    <h5 class="product-detail">Quantity : <span class="text-muted me-2"></span> {{productDetail.quantity}}</h5>
+                    <h5 class="product-detail">Extra Price : <span class="text-muted me-2"></span> {{productDetail.extra_price}}</h5>
+                    <h5 class="mb-4">Price : <span class="text-muted me-2"></span> No API CALL</h5>
+                    <h5 class="product-detail">Commission : <span class="text-muted me-2"></span> {{productDetail.commission}}</h5>
+                    <h5 class="product-detail">Product Description : <span class="text-muted me-2"></span></h5>
+                    <p class="text-muted mb-4">{{productDetail.description_en}}</p>
+                    <h5 class="product-detail">وصف المنتج : <span class="text-muted me-2"></span></h5>
+                    <p class="text-muted mb-4">{{productDetail.description_ar}}</p>
+                    <!-- <h6 class="text-success text-uppercase">{{productDetail[0].discount}} % Off</h6> -->
+                    <!-- <del>${{productDetail[0].oriRate}}                USD</del> -->
+
+                    <!-- <div class="row mb-3">
+                      <div class="col-md-6">
+                        <div *ngFor="let i of productDetail[0].feature">
+                          <p class="text-muted"><i
+                              class="bx bx-caret-right font-size-16 align-middle text-primary mr-1"></i>
+                            {{i}}</p>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div *ngFor="let i of productDetail[0].feature">
+                          <p class="text-muted"><i
+                              class="bx bx-caret-right font-size-16 align-middle text-primary mr-1"></i>
+                            {{i}}</p>
+                        </div>
+                      </div>
+                    </div> -->
+
+                    <!-- <div class="product-color">
+                      <h5 class="font-size-15">Color :</h5>
+                      <a href="javascript: void(0);" class="active" *ngFor="let i of productDetail[0].colorVariant">
+                        <div class="product-color-item border rounded">
+                          <img src={{i.value}} alt="" class="avatar-md">
+                        </div>
+                        <p>{{i.key}}</p>
+                      </a>
+
+                    </div> -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!-- end card -->
+        </div>
+        <!-- end w-100 -->
+      </div>
+    </div>
+  </div>
+  <!-- end row -->
+</div>

@@ -1,0 +1,73 @@
+<div class="container-fluid">
+  <app-page-title title="Orders" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          
+          <!-- Table -->
+          <div class="table-responsive mb-0">
+            <table class="table table-centered table-nowrap">
+              <thead class="thead-light">
+                <tr>
+                  <th style="width: 20px;">
+                    <div class="custom-control custom-checkbox">
+                      <input id="customCheck" type="checkbox" class="custom-control-input" />
+                      <label class="custom-control-label" for="customCheck">&nbsp;</label>
+                    </div>
+                  </th>
+                  <th>Order ID</th>
+                  <th>Billing Name</th>
+                  <th>Date</th>
+                  <th>Total</th>
+                  <th>Payment Status</th>
+                  <th>Payment Method</th>
+                  <th>Status</th>
+                  <th>View Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of transactions">
+                  <td>
+                    <div class="custom-control custom-checkbox">
+                      <input id="customCheck{{data.index}}" type="checkbox" class="custom-control-input" />
+                      <label class="custom-control-label" for="customCheck{{data.index}}">&nbsp;</label>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="javascript: void(0);" class="text-body font-weight-bold">{{data.order_id}}</a>
+                  </td>
+                  <td>{{data.customer_id.name}}</td>
+                  <td>{{data.customer_id.createdAt  | date:'dd/LL/YYYY' }}</td>
+                  <td>{{data.price}}</td>
+                  <td>
+                    <span class="badge badge-pill badge-soft-success font-size-12" [ngClass]=" { 'badge-soft-danger': data.status === 'Chargeback', 'badge-soft-warning':data.status === 'Refund' }">{{data.status}}</span>
+                  </td>
+                  <td>
+                    <i :class="`fab ${data.payment[0]} mr-1`"></i>
+                    {{data.paymentMethod}}
+                  </td>
+                  <td>
+                    <!-- <div>
+                      <ng-select style="width: 200px;" [items]="order_status"></ng-select>
+                    </div> -->
+                  </td>
+                  <td>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary btn-sm btn-rounded">View Details</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- End table -->
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- end table -->
+  
+</div>

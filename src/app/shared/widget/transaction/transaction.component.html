@@ -1,0 +1,142 @@
+<div class="table-responsive mb-0">
+  <table class="table table-centered table-nowrap">
+    <thead class="thead-light">
+      <tr>
+        <th style="width: 20px;">
+          <div class="custom-control custom-checkbox">
+            <input id="customCheck" type="checkbox" class="custom-control-input" />
+            <label class="custom-control-label" for="customCheck">&nbsp;</label>
+          </div>
+        </th>
+        <th>Order ID</th>
+        <th>Billing Name</th>
+        <th>Date</th>
+        <th>Total</th>
+        <th>Payment Status</th>
+        <th>Payment Method</th>
+        <th>View Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of transactions">
+        <td>
+          <div class="custom-control custom-checkbox">
+            <input id="customCheck{{data.index}}" type="checkbox" class="custom-control-input" />
+            <label class="custom-control-label" for="customCheck{{data.index}}">&nbsp;</label>
+          </div>
+        </td>
+        <td>
+          <a href="javascript: void(0);" class="text-body font-weight-bold">{{data.order_id}}</a>
+        </td>
+        <td>{{data.customer_id.name}}</td>
+        <td>{{data.customer_id.createdAt  | date:'dd/LL/YYYY' }}</td>
+        <td>{{data.price}}</td>
+        <td>
+          <span class="badge badge-pill badge-soft-success font-size-12" [ngClass]=" { 'badge-soft-danger': data.status === 'Chargeback',
+                        'badge-soft-warning':data.status === 'Refund' }">{{data.status}}</span>
+        </td>
+        <td>
+          <i :class="`fab ${data.payment[0]} mr-1`"></i>
+          {{data.paymentMethod}}
+        </td>
+        <td>
+          <!-- Button trigger modal -->
+          <button type="button" class="btn btn-primary btn-sm btn-rounded" (click)="openModal(content, data.order_id)">View
+            Details</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #content role="document" let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Order Details</h5>
+      <button type="button" class="close" aria-hidden="true" (click)="modal.dismiss('Cross click')">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="mb-2">
+        Order id:
+        <span class="text-primary">#{{selected.order_id}}</span>
+      </p>
+      <p class="mb-4">
+        Billing Name:
+        <span class="text-primary">{{selected.customer_id.name}}</span>
+      </p>
+      <p class="mb-4">
+        Billing Email:
+        <span class="text-primary">{{selected.customer_id.email}}</span>
+      </p>
+      <p class="mb-4">
+        Billing Phone:
+        <span class="text-primary">{{selected.customer_id.phone}}</span>
+      </p>
+      <p class="mb-4">
+        Billing Address:
+        <span class="text-primary">{{selected.customer_id.address}}</span>
+      </p>
+      <div class="table-responsive">
+        <table class="table table-centered table-nowrap">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Product Name</th>
+              <th scope="col">Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- <tr>
+              <th scope="row">
+                <div>
+                  <img src="assets/images/product/gold1.jpeg" alt class="avatar-sm" />
+                </div>
+              </th>
+              <td>
+                <div>
+                  <h5 class="text-truncate font-size-14">21K gold Necklace</h5>
+                  <p class="text-muted mb-0">SAR 225 x 1</p>
+                </div>
+              </td>
+              <td>$ 255</td>
+            </tr> -->
+            <tr>
+              <th scope="row">
+                <div>
+                  <img src="{{backend + '/getfile/?id='  + selected.products[0].product.images[0]}}" alt class="avatar-sm" />
+                </div>
+              </th>
+              <td>
+                <div>
+                  <h5 class="text-truncate font-size-14">18K {{selected.products[0].product.name_en}}</h5>
+                  <p class="text-muted mb-0">SAR {{selected.products[0].price}} x {{selected.products[0].quantity}}</p>
+                </div>
+              </td>
+              <td>SAR {{selected.products[0].price}}</td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <h6 class="m-0 text-right">Sub Total:</h6>
+              </td>
+              <td>SAR {{selected.products[0].price}}</td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <h6 class="m-0 text-right">Shipping:</h6>
+              </td>
+              <td>Free</td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <h6 class="m-0 text-right">Total:</h6>
+              </td>
+              <td>SAR {{selected.products[0].price}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+    </div>
+  </ng-template>
+</div>
+<!-- end table -->

@@ -1,0 +1,121 @@
+<div class="container-fluid">
+
+    <!-- start page title -->
+    <app-page-title title="System Information" [breadcrumbItems]=""></app-page-title>
+    <!-- end page title -->
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4"></h5>
+
+                    <form class="form-horizontal" [formGroup]="sysInfoForm" (ngSubmit)="onSubmit()">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                              <div class="form-group">
+                                <label for="app_name">App name</label>
+
+                                <input type="text" formControlName="app_name" class="form-control" id="app_name"
+                                  [ngClass]="{ 'is-invalid': submitted && f.app_name.errors }" />
+                                <div *ngIf="submitted && f.app_name.errors" class="invalid-feedback">
+                                  <div *ngIf="f.app_name.errors.required">App name is required</div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="formrow-password-input">Phone</label>
+                                    <input type="text" formControlName="phone" class="form-control" id="phone" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input type="text" formControlName="city" class="form-control" id="city">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="region">Region</label>
+                                    <ng-select id="region" formControlName="region" [items]="['Ar Riyadh','Western Region', 'Eastern Region', 'Medina Region', 'Aseer', 'Jazan']"></ng-select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="zip">Zip</label>
+                                    <input type="text" formControlName="zip"  class="form-control" id="zip">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <input type="text" formControlName="address"  class="form-control" id="address" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="vat_number">VAT Number</label>
+                                    <input type="text"  formControlName="vat_number" class="form-control" id="vat_number" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="vat">VAT (%)</label>
+                                    <input type="text" formControlName="vat" class="form-control" id="vat" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="commission">Commission (%)</label>
+                                    <input type="text" formControlName="commission" class="form-control" id="commission" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="currency">Currency</label>
+                                    <input type="text" formControlName="currency" class="form-control" id="currencyt" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="logo">Logo</label>
+                                    <input type="file" formControlName="logo" class="form-control" id="logo" />
+                                </div>
+                            </div>
+                            <img src="assets/images/kanf-logo.png" alt="" height="100" style="border: 1px solid;">
+                        </div>
+
+                        <div>
+                            <button type="submit" class="btn btn-primary w-md">Save</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+</div>

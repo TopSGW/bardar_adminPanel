@@ -1,0 +1,181 @@
+<div class="container-fluid">
+  <app-page-title title="Orders" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          
+          <!-- Table -->
+          <div class="table-responsive mb-0">
+            <table class="table table-centered table-nowrap">
+              <thead class="thead-light">
+                <tr>
+                  <th style="width: 20px;">
+                    <div class="custom-control custom-checkbox">
+                      <input id="customCheck" type="checkbox" class="custom-control-input" />
+                      <label class="custom-control-label" for="customCheck">&nbsp;</label>
+                    </div>
+                  </th>
+                  <th>Order ID</th>
+                  <th>Product</th>
+                  <th>Customer</th>
+                  <th>Discount code</th>
+                  <th>Total</th>
+                  <th>Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of transactions">
+                  <td>
+                    <div class="custom-control custom-checkbox">
+                      <input id="customCheck{{data.index}}" type="checkbox" class="custom-control-input" />
+                      <label class="custom-control-label" for="customCheck{{data.index}}">&nbsp;</label>
+                    </div>
+                  </td>
+                  <td>
+                    <a href="javascript: void(0);" class="text-body font-weight-bold">{{data.order_id}}</a>
+                  </td>
+                  <td>
+                    <div *ngFor="let product of data.products">
+                      <a href="javascript: void(0);" class="text-body font-weight-bold" (click)="openDetail(detailContent, product)">{{product.name_en}} </a>
+                    </div>
+                  </td>
+                  <td>{{data.customer_id.name}}</td>
+                  <td>
+                    {{data.coupon_id?.code}}
+                  </td>
+                  <td>{{data.price}}</td>
+                  <td>{{data.createdAt | date:'dd/LL/YYYY' }}</td>
+                  <td>
+                    <span class="badge badge-pill badge-soft-success font-size-12" [ngClass]=" { 'badge-soft-danger': data.status === 'REJECTED' || data.status === 'CANCELED', 'badge-soft-warning':data.status === 'SHIPPED' || data.status === 'DELIVERED', 'badge-soft-info': data.status === 'WAITING' }">{{data.status}}</span>
+                    <!-- <ng-select *ngIf="change_badge" [items]="order_status" style="width: 150px;" [appendTo]="'body'" [(ngModel)]="selectedStatus"></ng-select> -->
+                  </td>
+                  <td>
+                    <!-- Button trigger modal -->
+                    <div ngbDropdown container="body" placement="bottom-left">
+                      <i class="mdi mdi-dots-vertical dropdown-toggle" ngbDropdownToggle data-toggle="dropdown"
+                        aria-expanded="true"></i>
+                      <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                        <a class="dropdown-item" (click)="openEdit(editContent, data._id)"><i class="mdi mdi-account-edit"></i>Status</a>
+                        <a class="dropdown-item" (click)="deleteGroupItem(data._id)"><i class="mdi mdi-delete"></i>Delete</a>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- End table -->
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- end table -->
+  
+</div>
+
+<ng-template #editContent role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Change Status</h5>
+    <button type="button" class="close" aria-hidden="true" (click)="modal.dismiss('Cross click')">×</button>
+  </div>
+  <div class="modal-body">
+    <form class="form-horizontal" id="editForm" [formGroup]="editForm" (ngSubmit)="onEdit(modal)">
+
+      <ngb-alert type="danger" *ngIf="error" [dismissible]="false">{{ error }}</ngb-alert>
+      <!-- <div class="form-group">
+        <label for="order_id">Order ID</label>
+
+        <input type="text" formControlName="order_id" class="form-control" id="order_id"
+          [ngClass]="{ 'is-invalid': submitted && fe.order_id.errors }" />
+        <div *ngIf="submittedEdit && fe.order_id.errors" class="invalid-feedback">
+          <div *ngIf="fe.order_id.errors.required">Order ID is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="customer">Customer</label>
+
+        <input type="text" formControlName="customer" class="form-control" id="customer"
+          [ngClass]="{ 'is-invalid': submitted && fe.customer.errors }" />
+        <div *ngIf="submittedEdit && fe.customer.errors" class="invalid-feedback">
+          <div *ngIf="fe.customer.errors.required">Customer is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="discount">Discount code</label>
+
+        <input type="text" formControlName="discount" class="form-control" id="discount"
+          [ngClass]="{ 'is-invalid': submitted && fe.discount.errors }" />
+        <div *ngIf="submittedEdit && fe.discount.errors" class="invalid-feedback">
+          <div *ngIf="fe.discount.errors.required">Discount code is required</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="total">Total</label>
+
+        <input type="text" formControlName="total" class="form-control" id="total"
+          [ngClass]="{ 'is-invalid': submitted && fe.total.errors }" />
+        <div *ngIf="submittedEdit && fe.total.errors" class="invalid-feedback">
+          <div *ngIf="fe.total.errors.required"> Total is required</div>
+        </div>
+      </div> -->
+      <div class="form-group">
+        <!-- <label for="status">Status</label> -->
+        <ng-select *ngIf="change_badge" [items]="order_status" formControlName="status"></ng-select>
+        <div *ngIf="submittedEdit && fe.status.errors" class="invalid-feedback">
+          <div *ngIf="fe.status.errors.required">Status is required</div>
+        </div>
+      </div>
+
+
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    <input class="btn btn-primary" type="submit" form="editForm" value="Save"/>
+
+  </div>
+</ng-template>
+
+<ng-template #detailContent role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Order Details</h5>
+    <button type="button" class="close" aria-hidden="true" (click)="modal.dismiss('Cross click')">×</button>
+  </div>
+  <div class="modal-body">
+
+    <ngb-alert type="danger" *ngIf="error" [dismissible]="false">{{ error }}</ngb-alert>
+    <div class="d-flex mx-2">
+      <div>
+        <img style="width: 200px; height: 200px;" src="{{backend + '/getfile/?id='  + selectedProductImage}}" />
+      </div>
+      <div class="ml-2">
+        <div class="d-flex">
+          <label id="product_name mr-2">Title: </label>
+          <div for="product_name" class="font-weight-bold">&nbsp; {{selectedProductTitle}}</div>
+        </div>
+        <div class="d-flex mt-2">
+          <label id="product_price mr-2">Price: </label>
+          <div for="product_price" class="font-weight-bold">&nbsp; {{selectedProductPrice}}</div>
+        </div>
+        <div class="d-flex mt-2">
+          <label id="qrcode mr-2">Qrcode: </label>
+          <div for="qrcode" class="font-weight-bold">&nbsp; {{generateQrcode}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center">
+      <qrcode [qrdata]="generateQrcode" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+    <!-- <button class="btn btn-primary" (click)="generateBC()">Generate a new code</button> -->
+
+  </div>
+</ng-template>

@@ -1,0 +1,425 @@
+<div class="container-fluid">
+    <app-page-title title="Coupons" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <div class="row mb-md-2">
+              <div class="col-sm-12 col-md-6">
+                <div class="dataTables_length" id="tickets-table_length"><label
+                    class="d-inline-flex align-items-center">Show
+                    <select name="tickets-table_length" aria-controls="tickets-table" name="pageSize"
+                      [(ngModel)]="service.pageSize" class="form-control form-control-sm mx-2">
+                      <option [ngValue]="10">10</option>
+                      <option [ngValue]="25">25</option>
+                      <option [ngValue]="50">50</option>
+                      <option [ngValue]="100">100</option>
+                    </select> entries</label></div>
+              </div>
+              <!-- Search -->
+              <div class="col-sm-12 col-md-6">
+                <div id="tickets-table_filter" class="dataTables_filter text-md-right"><label
+                    class="d-inline-flex align-items-center">Search:
+                    <input type="text" name="searchTerm" class="form-control form-control-sm ml-2"
+                      aria-controls="tickets-table" [(ngModel)]="service.searchTerm"></label>
+                      <div class="text-sm-right">
+                          <button type="button" (click)="open(content)"  class="btn btn-success btn-rounded mb-2 mr-2"><i class="mdi mdi-plus mr-1"></i>
+                            Add New Coupon</button>
+                        </div>
+                  </div>
+              </div>
+              <!-- End search -->
+            </div>
+            <!-- Table -->
+            <div class="table-responsive">
+              <table id="basic-datatable"
+                class="table table-centered nowrap">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Status</th>
+                    <th>User</th>
+                    <th>Code</th>
+                    <th>Discount</th>
+                    <th>Max Discount ($)</th>
+                    <th>Profit</th>
+                    <th>Condition</th>
+                    <th>Category</th>
+                    <th>Except Discounted Product</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let table of tables$ | async;let i=index">
+                  <tr>
+                    <td><ngb-highlight [result]="table.id" [term]="service.searchTerm"></ngb-highlight></td>
+                    <td><ngb-highlight [result]="table.status" [term]="service.searchTerm"></ngb-highlight></td>
+                    <td>
+                      <ngb-highlight [result]="table.user" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="table.code" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="table.discount" [term]="service.searchTerm"></ngb-highlight>{{table.discount_type == "percent" ? "%" : "$"}}
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="table.max_discount" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="table.profit" [term]="service.searchTerm"></ngb-highlight>{{table.profit_type == "percent" ? "%" : "$"}}
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="table.total_purchase_condition" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="table.included_category?.name_en" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="table.except_discounted_product" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="table.start_date | date:'dd/LL/YYYY'" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                      <ngb-highlight [result]="table.end_date | date:'dd/LL/YYYY'" [term]="service.searchTerm"></ngb-highlight>
+                    </td>
+                    <td>
+                      <div ngbDropdown container="body" placement="bottom-left">
+                        <i class="mdi mdi-dots-vertical dropdown-toggle" ngbDropdownToggle data-toggle="dropdown"
+                          aria-expanded="true"></i>
+                        <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                          <a class="dropdown-item"><i class="fas fa-eye"></i>Show</a>
+                          <a class="dropdown-item" (click)="openEdit(editContent, table.id)"><i class="mdi mdi-account-edit"></i>Edit</a>
+                          <a class="dropdown-item" (click)="deleteGroupItem(table.id)"><i class="mdi mdi-delete"></i>delete</a>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+            <!-- End table -->
+            <div class="row justify-content-md-between align-items-md-center mt-2">
+              <div class="col-sm-12 col-md-5">
+                <div class="dataTables_info mb-2" id="tickets-table_info" role="status" aria-live="polite">Showing
+                  {{service.startIndex}} to
+                  {{service.endIndex}} of {{service.totalRecords}}
+                  entries
+                </div>
+              </div>
+              <!-- Pagination -->
+              <div class="col-sm-12 col-md-5">
+                <div class="text-md-right float-md-right pagination-rounded">
+                  <ngb-pagination [collectionSize]="total$ | async" [(page)]="service.page" [pageSize]="service.pageSize">
+                  </ngb-pagination>
+                </div>
+              </div>
+              <!-- End Pagination -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #content role="document" let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Add New Coupon</h5>
+      <button type="button" class="close" aria-hidden="true" (click)="modal.dismiss('Cross click')">×</button>
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal" id="newForm" [formGroup]="newForm" (ngSubmit)="onSubmit(modal)">
+
+        <ngb-alert type="danger" *ngIf="error" [dismissible]="false">{{ error }}</ngb-alert>
+
+        <div class="form-group">
+          <label for="user">User</label>
+
+          <input type="text" formControlName="user" class="form-control" id="user"
+            [ngClass]="{ 'is-invalid': submitted && f.user.errors }" />
+          <div *ngIf="submitted && f.user.errors" class="invalid-feedback">
+            <div *ngIf="f.user.errors.required">User is required</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="code">Code</label>
+
+          <input type="text" formControlName="code" class="form-control" id="code"
+            [ngClass]="{ 'is-invalid': submitted && f.code.errors }" />
+          <div *ngIf="submitted && f.code.errors" class="invalid-feedback">
+            <div *ngIf="f.code.errors.required">Code is required</div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label for="discount_type">Type</label>
+
+              <ng-select [items]="amountType" [ngClass]="{'is-invalid': submitted && f.discount_type.errors}" (change)="onDisable($event)" bindLabel="name" bindValue="id" formControlName="discount_type"></ng-select>
+              <div *ngIf="submitted && f.discount_type.errors" class="invalid-feedback">
+                <span *ngIf="f.discount_type.errors.required">Type is required.</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label for="discount">Discount</label>
+
+              <input type="number" formControlName="discount" class="form-control" id="discount"
+                [ngClass]="{ 'is-invalid': submitted && f.discount.errors }" />
+              <div *ngIf="submitted && f.discount.errors" class="invalid-feedback">
+                <div *ngIf="f.discount.errors.required">Discount is required</div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!disableType" class="col-sm-4">
+            <div class="form-group">
+              <label for="max_discount">Max Discount</label>
+              <input type="number" formControlName="max_discount" class="form-control" id="max_discount"
+                [ngClass]="{ 'is-invalid': submitted && f.max_discount.errors }" />
+              <div *ngIf="submitted && f.max_discount.errors" class="invalid-feedback">
+                <div *ngIf="f.max_discount.errors.required">Max Discount is required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label for="discount_type">Type</label>
+
+              <ng-select [items]="amountType" [ngClass]="{'is-invalid': submitted && f.profit_type.errors}" bindLabel="name" bindValue="id" formControlName="profit_type"></ng-select>
+              <div *ngIf="submitted && f.profit_type.errors" class="invalid-feedback">
+                <span *ngIf="f.profit_type.errors.required">Type is required.</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-8">
+            <div class="form-group">
+              <label for="profit">Profit</label>
+
+              <input type="number" formControlName="profit" class="form-control" id="profit"
+                [ngClass]="{ 'is-invalid': submitted && f.profit.errors }" />
+              <div *ngIf="submitted && f.profit.errors" class="invalid-feedback">
+                <div *ngIf="f.profit.errors.required">Profit is required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="total_purchase_condition">Total Purchase Condition</label>
+
+          <input type="number" formControlName="total_purchase_condition" class="form-control" id="total_purchase_condition"
+            [ngClass]="{ 'is-invalid': submitted && f.total_purchase_condition.errors }" />
+          <div *ngIf="submitted && f.total_purchase_condition.errors" class="invalid-feedback">
+            <div *ngIf="f.total_purchase_condition.errors.required"> Total Purchase Condition is required</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="included_category">Included Category</label>
+
+          <ng-select [items]="items_category" [ngClass]="{'is-invalid': submitted && f.included_category.errors}" bindLabel="name_en" bindValue="id" formControlName="included_category"></ng-select>
+          <div *ngIf="submitted && f.included_category.errors" class="invalid-feedback">
+            <span *ngIf="f.included_category.errors.required">Included Category is required.</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="except_discounted_product">Except Discounted Product</label>
+
+          <ng-select [items]="exceptDiscountedProduct" [ngClass]="{'is-invalid': submitted && f.except_discounted_product.errors}" bindLabel="name" bindValue="id" formControlName="except_discounted_product"></ng-select>
+          <div *ngIf="submitted && f.except_discounted_product.errors" class="invalid-feedback">
+            <span *ngIf="f.except_discounted_product.errors.required">Type is required.</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="start_date">Start Date</label>
+
+              <input type="date" formControlName="start_date" class="form-control" id="start_date"
+                [ngClass]="{ 'is-invalid': submitted && f.start_date.errors }" />
+              <div *ngIf="submitted && f.start_date.errors" class="invalid-feedback">
+                <div *ngIf="f.start_date.errors.required">Start Date is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="end_date">End Date</label>
+
+              <input type="date" formControlName="end_date" class="form-control" id="end_date"
+                [ngClass]="{ 'is-invalid': submitted && f.end_date.errors }" />
+              <div *ngIf="submitted && f.end_date.errors" class="invalid-feedback">
+                <div *ngIf="f.end_date.errors.required">End Date is required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+      <input class="btn btn-primary" type="submit" form="newForm" value="Save"/>
+
+    </div>
+  </ng-template>
+
+  <ng-template #editContent role="document" let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title mt-0">Edit Coupon</h5>
+      <button type="button" class="close" aria-hidden="true" (click)="modal.dismiss('Cross click')">×</button>
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal" id="editForm" [formGroup]="editForm" (ngSubmit)="onEdit(modal)">
+
+        <ngb-alert type="danger" *ngIf="error" [dismissible]="false">{{ error }}</ngb-alert>
+        <div class="form-group">
+          <label for="name_en">ID</label>
+
+          <input type="text" formControlName="id" class="form-control" id="id"
+            [ngClass]="{ 'is-invalid': submitted && fe.id.errors }"/>
+          <div *ngIf="submittedEdit && fe.id.errors" class="invalid-feedback">
+            <div *ngIf="fe.id.errors.required">ID is required</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="user">User</label>
+
+          <input type="text" formControlName="user" class="form-control" id="user"
+            [ngClass]="{ 'is-invalid': submitted && fe.user.errors }" />
+          <div *ngIf="submittedEdit && fe.user.errors" class="invalid-feedback">
+            <div *ngIf="fe.user.errors.required">User is required</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="code">Code</label>
+
+          <input type="text" formControlName="code" class="form-control" id="code"
+            [ngClass]="{ 'is-invalid': submitted && fe.code.errors }" />
+          <div *ngIf="submittedEdit && fe.code.errors" class="invalid-feedback">
+            <div *ngIf="fe.code.errors.required">Code is required</div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label for="discount_type">Type</label>
+
+              <ng-select [items]="amountType" [ngClass]="{'is-invalid': submitted && f.discount_type.errors}" bindLabel="name" bindValue="id" formControlName="discount_type"></ng-select>
+              <div *ngIf="submitted && f.discount_type.errors" class="invalid-feedback">
+                <span *ngIf="f.discount_type.errors.required">Type is required.</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label for="discount">Discount</label>
+
+              <input type="number" formControlName="discount" class="form-control" id="discount"
+                [ngClass]="{ 'is-invalid': submitted && fe.discount.errors }" />
+              <div *ngIf="submittedEdit && fe.discount.errors" class="invalid-feedback">
+                <div *ngIf="fe.discount.errors.required">Discount is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label for="max_discount">Max Discount</label>
+
+              <input type="number" formControlName="max_discount" class="form-control" id="max_discount"
+                [ngClass]="{ 'is-invalid': submitted && fe.max_discount.errors }" />
+              <div *ngIf="submittedEdit && fe.max_discount.errors" class="invalid-feedback">
+                <div *ngIf="fe.max_discount.errors.required">Max Discount is required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="form-group">
+              <label for="profit_type">Type</label>
+
+              <ng-select [items]="amountType" [ngClass]="{'is-invalid': submitted && f.profit_type.errors}" bindLabel="name" bindValue="id" formControlName="profit_type"></ng-select>
+              <div *ngIf="submitted && f.profit_type.errors" class="invalid-feedback">
+                <span *ngIf="f.profit_type.errors.required">Type is required.</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-8">
+            <div class="form-group">
+              <label for="profit">Profit</label>
+
+              <input type="number" formControlName="profit" class="form-control" id="profit"
+                [ngClass]="{ 'is-invalid': submitted && fe.profit.errors }" />
+              <div *ngIf="submittedEdit && fe.profit.errors" class="invalid-feedback">
+                <div *ngIf="fe.profit.errors.required">Profit is required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="total_purchase_condition">Total Purchase Condition</label>
+
+          <input type="number" formControlName="total_purchase_condition" class="form-control" id="total_purchase_condition"
+            [ngClass]="{ 'is-invalid': submitted && fe.total_purchase_condition.errors }" />
+          <div *ngIf="submittedEdit && fe.total_purchase_condition.errors" class="invalid-feedback">
+            <div *ngIf="fe.total_purchase_condition.errors.required"> Total Purchase Condition is required</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="included_category">Included Category</label>
+
+          <ng-select [items]="items_category" [ngClass]="{'is-invalid': submittedEdit && fe.included_category.errors}" bindLabel="name_en" bindValue="id" formControlName="included_category"></ng-select>
+          <div *ngIf="submittedEdit && fe.included_category.errors" class="invalid-feedback">
+            <span *ngIf="fe.included_category.errors.required">Included Category is required.</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="except_discounted_product">Except Discounted Product</label>
+
+          <ng-select [items]="exceptDiscountedProduct" [ngClass]="{'is-invalid': submittedEdit && fe.except_discounted_product.errors}" bindLabel="name" bindValue="id" formControlName="except_discounted_product"></ng-select>
+          <div *ngIf="submittedEdit && fe.except_discounted_product.errors" class="invalid-feedback">
+            <span *ngIf="fe.except_discounted_product.errors.required">Except discounted product is required.</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="start_date">Start Date</label>
+
+              <input type="date" formControlName="start_date" class="form-control" id="start_date"
+                [ngClass]="{ 'is-invalid': submitted && fe.start_date.errors }" />
+              <div *ngIf="submittedEdit && fe.start_date.errors" class="invalid-feedback">
+                <div *ngIf="fe.start_date.errors.required">Start Date is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="end_date">End Date</label>
+
+              <input type="date" formControlName="end_date" class="form-control" id="end_date"
+                [ngClass]="{ 'is-invalid': submitted && fe.end_date.errors }" />
+              <div *ngIf="submittedEdit && fe.end_date.errors" class="invalid-feedback">
+                <div *ngIf="fe.end_date.errors.required">End Date is required</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+      <input class="btn btn-primary" type="submit" form="editForm" value="Save"/>
+
+    </div>
+  </ng-template>

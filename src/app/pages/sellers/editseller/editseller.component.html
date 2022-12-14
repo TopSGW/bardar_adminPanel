@@ -1,0 +1,160 @@
+<div class="container-fluid">
+
+    <!-- start page title -->
+    <app-page-title title="Edit Seller" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+    <!-- end page title -->
+
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+
+            <h4 class="card-title">Basic Information</h4>
+            <p class="card-title-desc">Fill all information</p>
+
+            <form [formGroup]="productForm" id="productForm" name="productForm" (ngSubmit)="validSubmit()">
+              <input type="hidden" name="id" formControlName="id">
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="shopname">Seller Name</label>
+                    <input id="name_en" name="name_en" type="text" class="form-control" formControlName="name_en"
+                      [ngClass]="{'is-invalid': submit && form.name_en.errors}">
+                    <div *ngIf="submit && form.name_en.errors" class="invalid-feedback">
+                      <span *ngIf="form.name_en.errors.required">Name is required.</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input id="email" name="email" type="text" class="form-control" formControlName="email"
+                      [ngClass]="{'is-invalid': submit && form.email.errors}">
+                    <div *ngIf="submit && form.email.errors" class="invalid-feedback">
+                      <span *ngIf="form.email.errors.required">Email is required.</span>
+                    </div>
+                  </div>
+
+                <div class="form-group">
+                    <label for="address_en">Address</label>
+                    <input id="address_en" name="address_en" type="text" class="form-control" formControlName="address_en"
+                      [ngClass]="{'is-invalid': submit && form.address_en.errors}">
+                    <div *ngIf="submit && form.address_en.errors" class="invalid-feedback">
+                      <span *ngIf="form.address_en.errors.required">Address is required.</span>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="phone">Phone No.</label>
+                    <input id="phone" name="phone" type="text" class="form-control" formControlName="phone"
+                      [ngClass]="{'is-invalid': submit && form.phone.errors}">
+                    <div *ngIf="submit && form.phone.errors" class="invalid-feedback">
+                      <span *ngIf="form.phone.errors.required">Phone is required.</span>
+                    </div>
+                  </div>
+
+
+                  <div class="form-group">
+                    <label for="product-image" class="mt-2"> Documents</label>
+                    <dropzone class="dropzone" [ngClass]="{'is-invalid': submit && form.documents.errors}" (success)="onUploadSuccess($event)" [config]="config"></dropzone>
+                    <input id="documents" name="documents" type="hidden" formControlName="documents">
+                    <div *ngIf="submit && form.documents.errors" class="invalid-feedback">
+                      <span *ngIf="form.documents.errors.required">Documents are required. Upload at least 1.</span>
+                    </div>
+                    <div *ngIf="files.length>0" class="dropzone-display">
+                      <div class="row">
+                        <div *ngFor="let file of files" class="col-md-4">
+                          <div class="document-display">
+                            <a (click)="deleteImage(file)" class="delete-image"><i class="fas fa-trash-alt text-danger mr-1"></i>
+                            </a>
+                            <img src="{{backend + '/getfile/?id='  + file}}" class="img-fluid mx-auto d-block">
+                            <!-- <img src="{{backend + '/images/?id='  + image.id}}" alt=""
+                              class="img-fluid mx-auto d-block"> -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="name_ar">إسم التاجر</label>
+                        <input id="name_ar" name="name_ar" type="text" class="form-control" formControlName="name_ar"
+                          [ngClass]="{'is-invalid': submit && form.name_ar.errors}">
+                        <div *ngIf="submit && form.name_ar.errors" class="invalid-feedback">
+                          <span *ngIf="form.name_ar.errors.required">إسم التاجر is required.</span>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="formrow-inputCity">City</label>
+                                <input type="text" class="form-control" id="city" formControlName="city"
+                                [ngClass]="{'is-invalid': submit && form.city.errors}">
+                                <div *ngIf="submit && form.city.errors" class="invalid-feedback">
+                                  <span *ngIf="form.city.errors.required">City is required.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="formrow-inputState">Region</label>
+                                <ng-select formControlName="region" [ngClass]="{'is-invalid': submit && form.region.errors}" [items]="['Ar Riyadh','Western Region', 'Eastern Region', 'Medina Region', 'Aseer', 'Jazan']"></ng-select>
+                                <div *ngIf="submit && form.region.errors" class="invalid-feedback">
+                                  <span *ngIf="form.region.errors.required">Region is required.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label for="formrow-inputZip">Zip</label>
+                                <input type="text" class="form-control" formControlName="zip" id="zip"
+                                [ngClass]="{'is-invalid': submit && form.zip.errors}">
+                                <div *ngIf="submit && form.zip.errors" class="invalid-feedback">
+                                  <span *ngIf="form.zip.errors.required">Zip is required.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address_ar">العنوان</label>
+                        <input id="address_ar" name="address_ar" type="text" class="form-control" formControlName="address_ar"
+                          [ngClass]="{'is-invalid': submit && form.address_ar.errors}">
+                        <div *ngIf="submit && form.address_ar.errors" class="invalid-feedback">
+                          <span *ngIf="form.address_ar.errors.required">Address is required.</span>
+                        </div>
+                      </div>
+
+                  <div class="form-group">
+                    <label for="productdesc">Notes</label>
+                    <textarea class="form-control" [ngClass]="{'is-invalid': submit && form.description_en.errors}" formControlName="description_en" id="description_en" rows="5"></textarea>
+                    <div *ngIf="submit && form.description_en.errors" class="invalid-feedback">
+                      <span *ngIf="form.description_en.errors.required">Notes are required.</span>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="productdesc">ملاحظات</label>
+                    <textarea class="form-control"  [ngClass]="{'is-invalid': submit && form.description_ar.errors}" formControlName="description_ar" id="description_ar" rows="5"></textarea>
+                    <div *ngIf="submit && form.description_ar.errors" class="invalid-feedback">
+                      <span *ngIf="form.description_ar.errors.required">ملاحظات are required.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <input type="submit" form="productForm" class="btn btn-primary mr-1" value="Save Changes" [disabled]="submit"/>
+                <button type="submit" class="btn btn-secondary">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end row -->
+
+  </div> <!-- container-fluid -->
